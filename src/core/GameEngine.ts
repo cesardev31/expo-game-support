@@ -51,8 +51,8 @@ export class GameEngine {
   // Configurar el loop principal del juego
   private setupGameLoop(): void {
     this.gameLoop.setUpdateCallback((deltaTime: number) => {
-      const dtSec = deltaTime / 1000;
-      this.update(dtSec);
+      // deltaTime ya viene en segundos desde GameLoop
+      this.update(deltaTime);
     });
 
     this.gameLoop.setRenderCallback((interpolation: number) => {

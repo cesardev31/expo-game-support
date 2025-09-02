@@ -1,7 +1,9 @@
 // Ejemplo de uso de expo-game-support en React Native/Expo
 import React, { useEffect, useRef, useState } from "react";
 import { View, StyleSheet, Dimensions, PanResponder } from "react-native";
-import { GameEngine, GameObject, Vector2D } from "../src";
+import { GameEngine } from "../src/core/GameEngine";
+import { GameObject } from "../src/core/GameObject";
+import { Vector2D } from "../src/math/Vector2D";
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get("window");
 
