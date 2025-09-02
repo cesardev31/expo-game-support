@@ -25,9 +25,25 @@ Object.defineProperty(window, 'TouchEvent', {
     
     constructor(type: string, eventInitDict?: TouchEventInit) {
       super(type, eventInitDict);
-      this.touches = (eventInitDict?.touches as TouchList) || ({} as TouchList);
-      this.changedTouches = (eventInitDict?.changedTouches as TouchList) || ({} as TouchList);
-      this.targetTouches = (eventInitDict?.targetTouches as TouchList) || ({} as TouchList);
+      // Crear mock simple de TouchList
+      this.touches = this.createMockTouchList(eventInitDict?.touches as Touch[] || []);
+      this.changedTouches = this.createMockTouchList(eventInitDict?.changedTouches as Touch[] || []);
+      this.targetTouches = this.createMockTouchList(eventInitDict?.targetTouches as Touch[] || []);
+    }
+    
+    private createMockTouchList(touches: Touch[]): TouchList {
+      const mockList = {
+        length: touches.length,
+        item: (index: number) => touches[index] || null,
+        [Symbol.iterator]: () => touches[Symbol.iterator]()
+      };
+      
+      // Agregar índices numéricos
+      touches.forEach((touch, index) => {
+        (mockList as any)[index] = touch;
+      });
+      
+      return mockList as TouchList;
     }
   }
 });
