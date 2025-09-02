@@ -1,6 +1,6 @@
 {
   "name": "expo-game-support",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Librería de soporte para desarrollo de juegos en Expo con físicas, gestión de ciclos de juego y optimización de inputs táctiles",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
