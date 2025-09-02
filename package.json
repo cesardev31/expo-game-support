@@ -1,0 +1,43 @@
+{
+  "name": "expo-game-support",
+  "version": "0.0.1",
+  "description": "Librería de soporte para desarrollo de juegos en Expo con físicas, gestión de ciclos de juego y optimización de inputs táctiles",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "expo",
+    "react-native",
+    "game",
+    "physics",
+    "game-loop",
+    "touch-input",
+    "mobile-games"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "expo": ">=53.0.0",
+    "react": ">=19.0.0",
+    "react-native": ">=0.72.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-native": "^0.72.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^9.0.0",
+    "jest": "^29.0.0",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "react-native-gesture-handler": "^2.12.0",
+    "react-native-reanimated": "^3.5.0"
+  }
+}
