@@ -20,7 +20,7 @@
     "touch-input",
     "mobile-games"
   ],
-  "author": "",
+  "author": "Cesar Andres Pereira Bernal",
   "license": "MIT",
   "peerDependencies": {
     "expo": ">=53.0.0",
