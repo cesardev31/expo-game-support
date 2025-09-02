@@ -1,10 +1,10 @@
-import { GameLoop } from './GameLoop';
-import { PhysicsEngine } from '../physics/PhysicsEngine';
-import { TouchInputManager } from '../input/TouchInputManager';
-import { TouchInputManagerRN } from '../input/TouchInputManagerRN';
-import { GameObject } from './GameObject';
-import { Vector2D } from '../math/Vector2D';
-import { GameEngineConfig, CollisionEvent } from '../types';
+import { GameLoop } from "./GameLoop";
+import { PhysicsEngine } from "../physics/PhysicsEngine";
+import { TouchInputManager } from "../input/TouchInputManager";
+import { TouchInputManagerRN } from "../input/TouchInputManagerRN";
+import { GameObject } from "./GameObject";
+import { Vector2D } from "../math/Vector2D";
+import { GameEngineConfig, CollisionEvent } from "../types";
 
 // Motor principal del juego que coordina todos los sistemas
 export class GameEngine {
@@ -21,7 +21,7 @@ export class GameEngine {
 
   constructor(config: GameEngineConfig) {
     this.config = config;
-    
+
     // Inicializar sistemas
     this.gameLoop = new GameLoop(config.gameLoop);
     this.physicsEngine = new PhysicsEngine(config.gravity);
@@ -33,11 +33,15 @@ export class GameEngine {
   // Crear el TouchInputManager apropiado según el entorno
   private createTouchInputManager(): TouchInputManager | TouchInputManagerRN {
     // Detectar si estamos en React Native
-    if (typeof document === 'undefined' && typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+    if (
+      typeof document === "undefined" &&
+      typeof navigator !== "undefined" &&
+      navigator.product === "ReactNative"
+    ) {
       return new TouchInputManagerRN();
     }
     // Detectar si estamos en un entorno sin DOM (como React Native)
-    if (typeof document === 'undefined') {
+    if (typeof document === "undefined") {
       return new TouchInputManagerRN();
     }
     // Usar TouchInputManager web por defecto
@@ -47,7 +51,8 @@ export class GameEngine {
   // Configurar el loop principal del juego
   private setupGameLoop(): void {
     this.gameLoop.setUpdateCallback((deltaTime: number) => {
-      this.update(deltaTime);
+      const dtSec = deltaTime / 1000;
+      this.update(dtSec);
     });
 
     this.gameLoop.setRenderCallback((interpolation: number) => {
@@ -129,7 +134,7 @@ export class GameEngine {
   // Limpiar objetos inactivos
   private cleanupInactiveObjects(): void {
     const toRemove: string[] = [];
-    
+
     for (const [id, gameObject] of this.gameObjects.entries()) {
       if (!gameObject.active) {
         toRemove.push(id);
@@ -144,7 +149,7 @@ export class GameEngine {
   // API pública para gestión de objetos
   addGameObject(gameObject: GameObject): void {
     this.gameObjects.set(gameObject.id, gameObject);
-    
+
     if (gameObject.physics) {
       this.physicsEngine.addObject(gameObject);
     }
@@ -176,11 +181,19 @@ export class GameEngine {
   }
 
   // API para input táctil
-  onTouch(id: string, callback: (event: import('../types').GameTouchEvent) => void): void {
+  onTouch(
+    id: string,
+    callback: (event: import("../types").GameTouchEvent) => void
+  ): void {
     this.touchInputManager.onTouch(id, callback);
   }
 
-  onGesture(id: string, callback: (gesture: import('../input/TouchInputManager').GestureEvent) => void): void {
+  onGesture(
+    id: string,
+    callback: (
+      gesture: import("../input/TouchInputManager").GestureEvent
+    ) => void
+  ): void {
     this.touchInputManager.onGesture(id, callback);
   }
 
@@ -196,7 +209,7 @@ export class GameEngine {
   // Utilidades
   getObjectsInArea(center: Vector2D, radius: number): GameObject[] {
     const objectsInArea: GameObject[] = [];
-    
+
     for (const gameObject of this.gameObjects.values()) {
       if (gameObject.active && gameObject.position.distance(center) <= radius) {
         objectsInArea.push(gameObject);
@@ -208,7 +221,7 @@ export class GameEngine {
 
   getObjectsAtPoint(point: Vector2D): GameObject[] {
     const objectsAtPoint: GameObject[] = [];
-    
+
     for (const gameObject of this.gameObjects.values()) {
       if (gameObject.active && gameObject.containsPoint(point)) {
         objectsAtPoint.push(gameObject);
@@ -225,7 +238,7 @@ export class GameEngine {
       fps: this.gameLoop.getCurrentFPS(),
       objectCount: this.gameObjects.size,
       physicsObjectCount: this.physicsEngine.getObjectCount(),
-      activeTouches: this.touchInputManager.getActiveTouches().length
+      activeTouches: this.touchInputManager.getActiveTouches().length,
     };
   }
 

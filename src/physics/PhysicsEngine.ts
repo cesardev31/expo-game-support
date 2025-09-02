@@ -50,15 +50,15 @@ export class PhysicsEngine {
 
   // Aplicar gravedad a todos los objetos
   private applyGravity(deltaTime: number): void {
-    const gravityForce = this.gravity.multiply(deltaTime);
-
     for (const gameObject of this.gameObjects.values()) {
       if (
         gameObject.physics &&
         !gameObject.physics.isStatic &&
         gameObject.physics.mass > 0
       ) {
-        gameObject.applyForce(gravityForce.multiply(gameObject.physics.mass));
+        // F = m * g (sin dt)
+        const gravityForce = this.gravity.multiply(gameObject.physics.mass);
+        gameObject.applyForce(gravityForce);
       }
     }
   }
@@ -96,8 +96,8 @@ export class PhysicsEngine {
     gameObject.rotation += gameObject.physics.angularVelocity * deltaTime;
 
     // Resetear fuerzas
-    gameObject.physics.force.x = 0;
-    gameObject.physics.force.y = 0;
+    gameObject.physics.acceleration.x = 0;
+    gameObject.physics.acceleration.y = 0;
   }
 
   // Manejar colisiones entre objetos
