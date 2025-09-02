@@ -24,7 +24,7 @@ npm install expo react react-native react-native-gesture-handler react-native-re
 
 ## 🎮 Uso Básico
 
-### Configuración inicial
+### Configuración inicial (Web)
 
 ```typescript
 import { GameEngine, GameObject, Vector2D } from 'expo-game-support';
@@ -44,6 +44,58 @@ const gameEngine = new GameEngine({
 // Inicializar y comenzar
 gameEngine.initialize();
 gameEngine.start();
+```
+
+### Configuración para React Native/Expo
+
+```tsx
+import React, { useEffect, useRef } from 'react';
+import { View, PanResponder } from 'react-native';
+import { GameEngine, GameObject, Vector2D } from 'expo-game-support';
+
+export default function GameComponent() {
+  const gameEngineRef = useRef<GameEngine | null>(null);
+
+  useEffect(() => {
+    const gameEngine = new GameEngine({
+      width: 400,
+      height: 600,
+      gravity: new Vector2D(0, 981),
+      gameLoop: {
+        targetFPS: 60,
+        maxDeltaTime: 0.016,
+        enableFixedTimeStep: true
+      }
+    });
+
+    gameEngineRef.current = gameEngine;
+    gameEngine.initialize();
+    gameEngine.start();
+
+    return () => gameEngine.stop();
+  }, []);
+
+  // Configurar PanResponder para eventos táctiles
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onMoveShouldSetPanResponder: () => true,
+    onPanResponderGrant: (evt) => {
+      gameEngineRef.current?.handleTouchStart(evt.nativeEvent);
+    },
+    onPanResponderMove: (evt) => {
+      gameEngineRef.current?.handleTouchMove(evt.nativeEvent);
+    },
+    onPanResponderRelease: (evt) => {
+      gameEngineRef.current?.handleTouchEnd(evt.nativeEvent);
+    },
+  });
+
+  return (
+    <View style={{ flex: 1 }} {...panResponder.panHandlers}>
+      {/* Tu UI del juego aquí */}
+    </View>
+  );
+}
 ```
 
 ### Crear objetos del juego

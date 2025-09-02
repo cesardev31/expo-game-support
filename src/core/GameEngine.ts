@@ -1,6 +1,7 @@
 import { GameLoop } from './GameLoop';
 import { PhysicsEngine } from '../physics/PhysicsEngine';
 import { TouchInputManager } from '../input/TouchInputManager';
+import { TouchInputManagerRN } from '../input/TouchInputManagerRN';
 import { GameObject } from './GameObject';
 import { Vector2D } from '../math/Vector2D';
 import { GameEngineConfig, CollisionEvent } from '../types';
@@ -9,7 +10,7 @@ import { GameEngineConfig, CollisionEvent } from '../types';
 export class GameEngine {
   private gameLoop: GameLoop;
   private physicsEngine: PhysicsEngine;
-  private touchInputManager: TouchInputManager;
+  private touchInputManager: TouchInputManager | TouchInputManagerRN;
   private gameObjects: Map<string, GameObject> = new Map();
   private config: GameEngineConfig;
   private isInitialized: boolean = false;
@@ -24,9 +25,23 @@ export class GameEngine {
     // Inicializar sistemas
     this.gameLoop = new GameLoop(config.gameLoop);
     this.physicsEngine = new PhysicsEngine(config.gravity);
-    this.touchInputManager = new TouchInputManager();
+    this.touchInputManager = this.createTouchInputManager();
 
     this.setupGameLoop();
+  }
+
+  // Crear el TouchInputManager apropiado según el entorno
+  private createTouchInputManager(): TouchInputManager | TouchInputManagerRN {
+    // Detectar si estamos en React Native
+    if (typeof document === 'undefined' && typeof navigator !== 'undefined' && navigator.product === 'ReactNative') {
+      return new TouchInputManagerRN();
+    }
+    // Detectar si estamos en un entorno sin DOM (como React Native)
+    if (typeof document === 'undefined') {
+      return new TouchInputManagerRN();
+    }
+    // Usar TouchInputManager web por defecto
+    return new TouchInputManager();
   }
 
   // Configurar el loop principal del juego
@@ -219,6 +234,31 @@ export class GameEngine {
     this.gameObjects.clear();
     this.physicsEngine.clear();
     this.touchInputManager.destroy();
+  }
+
+  // Métodos para React Native - conectar eventos táctiles manualmente
+  handleTouchStart(nativeEvent: any): void {
+    if (this.touchInputManager instanceof TouchInputManagerRN) {
+      this.touchInputManager.handleTouchStart(nativeEvent);
+    }
+  }
+
+  handleTouchMove(nativeEvent: any): void {
+    if (this.touchInputManager instanceof TouchInputManagerRN) {
+      this.touchInputManager.handleTouchMove(nativeEvent);
+    }
+  }
+
+  handleTouchEnd(nativeEvent: any): void {
+    if (this.touchInputManager instanceof TouchInputManagerRN) {
+      this.touchInputManager.handleTouchEnd(nativeEvent);
+    }
+  }
+
+  handleTouchCancel(nativeEvent: any): void {
+    if (this.touchInputManager instanceof TouchInputManagerRN) {
+      this.touchInputManager.handleTouchCancel(nativeEvent);
+    }
   }
 
   // Destruir el motor completamente
