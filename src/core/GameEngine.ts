@@ -148,10 +148,15 @@ export class GameEngine {
 
   // API pública para gestión de objetos
   addGameObject(gameObject: GameObject): void {
+    console.log(`🎮 [GAMEENGINE] Adding GameObject ${gameObject.id}, hasPhysics: ${!!gameObject.physics}`);
     this.gameObjects.set(gameObject.id, gameObject);
 
     if (gameObject.physics) {
+      console.log(`🎮 [GAMEENGINE] Adding ${gameObject.id} to PhysicsEngine`);
       this.physicsEngine.addObject(gameObject);
+      console.log(`🎮 [GAMEENGINE] PhysicsEngine now has ${this.physicsEngine.getObjectCount()} objects`);
+    } else {
+      console.log(`🎮 [GAMEENGINE] ${gameObject.id} has no physics, skipping PhysicsEngine`);
     }
   }
 

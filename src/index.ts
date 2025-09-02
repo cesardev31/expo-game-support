@@ -10,6 +10,12 @@ export { GameObject } from "./core/GameObject";
 export { Vector2D } from "./math/Vector2D";
 export { CollisionDetector } from "./physics/CollisionDetector";
 
+// Utilities
+export { BoundaryChecker } from "./utils/BoundaryChecker";
+export { ObjectCleaner } from "./utils/ObjectCleaner";
+export { ScoreZone, ScoreManager } from "./utils/ScoreZone";
+export { ObjectSpawner } from "./utils/ObjectSpawner";
+
 // Tipos y interfaces
 export type {
   GameObjectConfig,

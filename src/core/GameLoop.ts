@@ -53,10 +53,21 @@ export class GameLoop {
 
     const currentTime = performance.now();
     let deltaTime = (currentTime - this.lastTime) / 1000; // Convertir a segundos
+    
+    console.log(`⏱️ [GAMELOOP] currentTime: ${currentTime}, lastTime: ${this.lastTime}, rawDelta: ${deltaTime}`);
+    
     this.lastTime = currentTime;
 
-    // Limitar deltaTime para evitar saltos grandes
+    // Limitar deltaTime para evitar saltos grandes y establecer mínimo
     deltaTime = Math.min(deltaTime, this.config.maxDeltaTime);
+    
+    // Establecer deltaTime mínimo para evitar valores microscópicos
+    const minDeltaTime = 1/120; // ~8.33ms mínimo (120 FPS máximo)
+    if (deltaTime < minDeltaTime) {
+      deltaTime = minDeltaTime;
+    }
+    
+    console.log(`⏱️ [GAMELOOP] finalDelta: ${deltaTime}, maxDelta: ${this.config.maxDeltaTime}, minDelta: ${minDeltaTime}`);
 
     if (this.config.enableFixedTimeStep) {
       this.fixedTimeStepLoop(deltaTime);

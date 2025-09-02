@@ -1,30 +1,30 @@
 # Expo Game Support
 
-Una librería completa para desarrollo de juegos en Expo que añade capacidades avanzadas de físicas, gestión de ciclos de juego y optimización de inputs táctiles.
+A complete game-development library for Expo/React Native that adds advanced physics, a robust game loop, and optimized touch input handling.
 
-## 🚀 Características
+## 🚀 Features
 
-- **Motor de Físicas**: Sistema completo con gravedad, colisiones, fuerzas e impulsos
-- **Game Loop Optimizado**: Ciclo de juego con paso fijo o variable, control de FPS
-- **Input Táctil Avanzado**: Gestos optimizados (tap, swipe, long press, double tap)
-- **Detección de Colisiones**: AABB y circular con resolución automática
-- **Matemáticas 2D**: Operaciones vectoriales completas
-- **TypeScript**: Completamente tipado para mejor experiencia de desarrollo
+- **Physics Engine**: Gravity, collisions, forces, and impulses
+- **Optimized Game Loop**: Fixed or variable time step, FPS control
+- **Advanced Touch Input**: Optimized gestures (tap, swipe, long press, double tap)
+- **Collision Detection**: AABB and circle with basic resolution
+- **2D Math**: Comprehensive vector operations
+- **TypeScript**: Fully typed for an improved DX
 
-## 📦 Instalación
+## 📦 Installation
 
 ```bash
 npm install expo-game-support
 ```
 
-### Dependencias peer requeridas:
+### Required peer dependencies:
 ```bash
 npm install expo react react-native react-native-gesture-handler react-native-reanimated
 ```
 
-## 🎮 Uso Básico
+## 🎮 Basic Usage
 
-### Configuración inicial (Web)
+### Initial setup (Web)
 
 ```typescript
 import { GameEngine, GameObject, Vector2D } from 'expo-game-support';
@@ -46,7 +46,7 @@ gameEngine.initialize();
 gameEngine.start();
 ```
 
-### Configuración para React Native/Expo
+### Setup for React Native/Expo
 
 ```tsx
 import React, { useEffect, useRef } from 'react';

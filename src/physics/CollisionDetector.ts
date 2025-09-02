@@ -16,9 +16,15 @@ export class CollisionDetector {
     const boundsA = objA.getBounds();
     const boundsB = objB.getBounds();
 
+    console.log(`🔍 [COLLISION] Checking ${objA.id} vs ${objB.id}`);
+    console.log(`🔍 [COLLISION] ${objA.id} bounds: left=${boundsA.left}, right=${boundsA.right}, top=${boundsA.top}, bottom=${boundsA.bottom}`);
+    console.log(`🔍 [COLLISION] ${objB.id} bounds: left=${boundsB.left}, right=${boundsB.right}, top=${boundsB.top}, bottom=${boundsB.bottom}`);
+
     // Verificar si hay superposición
     const overlapX = Math.min(boundsA.right, boundsB.right) - Math.max(boundsA.left, boundsB.left);
     const overlapY = Math.min(boundsA.bottom, boundsB.bottom) - Math.max(boundsA.top, boundsB.top);
+
+    console.log(`🔍 [COLLISION] Overlaps: X=${overlapX}, Y=${overlapY}`);
 
     if (overlapX <= 0 || overlapY <= 0) {
       return null; // No hay colisión

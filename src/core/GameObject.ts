@@ -1,5 +1,5 @@
-import { Vector2D } from '../math/Vector2D';
-import { GameObjectConfig, PhysicsBody } from '../types';
+import { Vector2D } from "../math/Vector2D";
+import { GameObjectConfig, PhysicsBody } from "../types";
 
 // Clase base para todos los objetos del juego
 export class GameObject {
@@ -23,7 +23,7 @@ export class GameObject {
       this.physics = {
         ...config.physics,
         force: new Vector2D(0, 0),
-        angularVelocity: 0
+        angularVelocity: 0,
       };
     }
   }
@@ -31,10 +31,6 @@ export class GameObject {
   // Actualizar el objeto cada frame
   update(deltaTime: number): void {
     if (!this.active) return;
-
-    if (this.physics && !this.physics.isStatic) {
-      this.updatePhysics(deltaTime);
-    }
   }
 
   // Actualizar física del objeto
@@ -47,13 +43,15 @@ export class GameObject {
 
     // Aplicar fuerza (F = ma)
     if (this.physics.mass > 0) {
-      this.physics.velocity.x += (this.physics.force.x / this.physics.mass) * deltaTime;
-      this.physics.velocity.y += (this.physics.force.y / this.physics.mass) * deltaTime;
+      this.physics.velocity.x +=
+        (this.physics.force.x / this.physics.mass) * deltaTime;
+      this.physics.velocity.y +=
+        (this.physics.force.y / this.physics.mass) * deltaTime;
     }
 
     // Aplicar fricción
-    this.physics.velocity.x *= (1 - this.physics.friction * deltaTime);
-    this.physics.velocity.y *= (1 - this.physics.friction * deltaTime);
+    this.physics.velocity.x *= 1 - this.physics.friction * deltaTime;
+    this.physics.velocity.y *= 1 - this.physics.friction * deltaTime;
 
     // Actualizar posición basada en velocidad
     this.position.x += this.physics.velocity.x * deltaTime;
@@ -70,14 +68,15 @@ export class GameObject {
   // Aplicar fuerza al objeto
   applyForce(force: Vector2D): void {
     if (!this.physics || this.physics.isStatic) return;
-    
+
     this.physics.force.x += force.x;
     this.physics.force.y += force.y;
   }
 
   // Aplicar impulso (cambio instantáneo de velocidad)
   applyImpulse(impulse: Vector2D): void {
-    if (!this.physics || this.physics.isStatic || this.physics.mass <= 0) return;
+    if (!this.physics || this.physics.isStatic || this.physics.mass <= 0)
+      return;
 
     this.physics.velocity.x += impulse.x / this.physics.mass;
     this.physics.velocity.y += impulse.y / this.physics.mass;
@@ -89,17 +88,19 @@ export class GameObject {
       left: this.position.x - this.size.x / 2,
       right: this.position.x + this.size.x / 2,
       top: this.position.y - this.size.y / 2,
-      bottom: this.position.y + this.size.y / 2
+      bottom: this.position.y + this.size.y / 2,
     };
   }
 
   // Verificar si un punto está dentro del objeto
   containsPoint(point: Vector2D): boolean {
     const bounds = this.getBounds();
-    return point.x >= bounds.left && 
-           point.x <= bounds.right && 
-           point.y >= bounds.top && 
-           point.y <= bounds.bottom;
+    return (
+      point.x >= bounds.left &&
+      point.x <= bounds.right &&
+      point.y >= bounds.top &&
+      point.y <= bounds.bottom
+    );
   }
 
   // Destruir el objeto
@@ -111,11 +112,11 @@ export class GameObject {
   // Clonar el objeto
   clone(): GameObject {
     const config: GameObjectConfig = {
-      id: this.id + '_clone',
+      id: this.id + "_clone",
       position: this.position.clone(),
       size: this.size.clone(),
       rotation: this.rotation,
-      physics: this.physics ? { ...this.physics } : undefined
+      physics: this.physics ? { ...this.physics } : undefined,
     };
     return new GameObject(config);
   }

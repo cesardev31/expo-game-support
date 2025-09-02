@@ -30,6 +30,8 @@ export class PhysicsEngine {
 
   // Actualizar todas las físicas
   update(deltaTime: number): void {
+    console.log(`🔧 [PHYSICS] PhysicsEngine.update called with dt=${deltaTime.toFixed(4)}, objects=${this.gameObjects.size}`);
+    
     // Aplicar gravedad a todos los objetos
     this.applyGravity(deltaTime);
 
@@ -40,6 +42,7 @@ export class PhysicsEngine {
         gameObject.physics &&
         !gameObject.physics.isStatic
       ) {
+        console.log(`🔧 [PHYSICS] Updating physics for object ${gameObject.id}`);
         this.updateObjectPhysics(gameObject, deltaTime);
       }
     }
@@ -50,6 +53,7 @@ export class PhysicsEngine {
 
   // Aplicar gravedad a todos los objetos
   private applyGravity(deltaTime: number): void {
+    console.log(`🌍 [PHYSICS] Applying gravity ${this.gravity.x}, ${this.gravity.y} to ${this.gameObjects.size} objects`);
     for (const gameObject of this.gameObjects.values()) {
       if (
         gameObject.physics &&
@@ -58,6 +62,7 @@ export class PhysicsEngine {
       ) {
         // F = m * g (sin dt)
         const gravityForce = this.gravity.multiply(gameObject.physics.mass);
+        console.log(`🌍 [PHYSICS] Applying gravity force ${gravityForce.x}, ${gravityForce.y} to ${gameObject.id}`);
         gameObject.applyForce(gravityForce);
       }
     }
@@ -66,6 +71,8 @@ export class PhysicsEngine {
   // Actualizar física de un objeto específico
   private updateObjectPhysics(gameObject: GameObject, deltaTime: number): void {
     if (!gameObject.physics) return;
+
+    console.log(`⚙️ [PHYSICS] Before update - ${gameObject.id}: pos(${gameObject.position.x.toFixed(2)}, ${gameObject.position.y.toFixed(2)}) vel(${gameObject.physics.velocity.x.toFixed(2)}, ${gameObject.physics.velocity.y.toFixed(2)}) force(${gameObject.physics.force.x.toFixed(2)}, ${gameObject.physics.force.y.toFixed(2)})`);
 
     // Aplicar aceleración
     const acceleration = new Vector2D(
@@ -79,6 +86,8 @@ export class PhysicsEngine {
       acceleration.y += gameObject.physics.force.y / gameObject.physics.mass;
     }
 
+    console.log(`⚙️ [PHYSICS] Calculated acceleration: (${acceleration.x.toFixed(2)}, ${acceleration.y.toFixed(2)})`);
+
     // Actualizar velocidad
     gameObject.physics.velocity.x += acceleration.x * deltaTime;
     gameObject.physics.velocity.y += acceleration.y * deltaTime;
@@ -88,16 +97,22 @@ export class PhysicsEngine {
     gameObject.physics.velocity.x *= friction;
     gameObject.physics.velocity.y *= friction;
 
+    console.log(`⚙️ [PHYSICS] After velocity update: (${gameObject.physics.velocity.x.toFixed(2)}, ${gameObject.physics.velocity.y.toFixed(2)})`);
+
     // Actualizar posición
+    const oldX = gameObject.position.x;
+    const oldY = gameObject.position.y;
     gameObject.position.x += gameObject.physics.velocity.x * deltaTime;
     gameObject.position.y += gameObject.physics.velocity.y * deltaTime;
+
+    console.log(`⚙️ [PHYSICS] Position update: (${oldX.toFixed(2)}, ${oldY.toFixed(2)}) -> (${gameObject.position.x.toFixed(2)}, ${gameObject.position.y.toFixed(2)})`);
 
     // Actualizar rotación
     gameObject.rotation += gameObject.physics.angularVelocity * deltaTime;
 
     // Resetear fuerzas
-    gameObject.physics.acceleration.x = 0;
-    gameObject.physics.acceleration.y = 0;
+    gameObject.physics.force.x = 0;
+    gameObject.physics.force.y = 0;
   }
 
   // Manejar colisiones entre objetos
@@ -111,6 +126,11 @@ export class PhysicsEngine {
 
         if (!objA.active || !objB.active) continue;
         if (!objA.physics || !objB.physics) continue;
+
+        // Skip collision between pipes (both start with "pipe-")
+        if (objA.id.startsWith("pipe-") && objB.id.startsWith("pipe-")) {
+          continue;
+        }
 
         const collision = this.collisionDetector.checkCollision(objA, objB);
         if (collision) {
