@@ -4,10 +4,11 @@ A complete game-development library for Expo/React Native that adds advanced phy
 
 ## 🚀 Features
 
-- **Physics Engine**: Gravity, collisions, forces, and impulses
+- **Physics Engine**: Gravity, collisions, forces, impulses, sleeping
 - **Optimized Game Loop**: Fixed or variable time step, FPS control
 - **Advanced Touch Input**: Optimized gestures (tap, swipe, long press, double tap)
 - **Collision Detection**: AABB and circle with basic resolution
+- **Collision Events**: Collision start/end and trigger enter/exit callbacks
 - **2D Math**: Comprehensive vector operations
 - **TypeScript**: Fully typed for an improved DX
 
@@ -29,11 +30,11 @@ npm install expo react react-native react-native-gesture-handler react-native-re
 ```typescript
 import { GameEngine, GameObject, Vector2D } from 'expo-game-support';
 
-// Configurar el motor del juego
+// Configure the game engine
 const gameEngine = new GameEngine({
   width: 400,
   height: 600,
-  gravity: new Vector2D(0, 981), // Gravedad hacia abajo
+  gravity: new Vector2D(0, 981), // Gravity pointing down
   gameLoop: {
     targetFPS: 60,
     maxDeltaTime: 0.05,
@@ -41,7 +42,7 @@ const gameEngine = new GameEngine({
   }
 });
 
-// Inicializar y comenzar
+// Initialize and start
 gameEngine.initialize();
 gameEngine.start();
 ```
@@ -75,7 +76,7 @@ export default function GameComponent() {
     return () => gameEngine.stop();
   }, []);
 
-  // Configurar PanResponder para eventos táctiles
+  // Wire PanResponder to touch input
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
     onMoveShouldSetPanResponder: () => true,
@@ -92,16 +93,16 @@ export default function GameComponent() {
 
   return (
     <View style={{ flex: 1 }} {...panResponder.panHandlers}>
-      {/* Tu UI del juego aquí */}
+      {/* Your game UI here */}
     </View>
   );
 }
 ```
 
-### Crear objetos del juego
+### Create game objects
 
 ```typescript
-// Crear una pelota con física
+// Create a ball with physics
 const ball = new GameObject({
   id: 'ball',
   position: new Vector2D(200, 100),
@@ -111,57 +112,57 @@ const ball = new GameObject({
     velocity: new Vector2D(0, 0),
     acceleration: new Vector2D(0, 0),
     friction: 0.1,
-    restitution: 0.8, // Rebote
+    restitution: 0.8, // Bounciness
     isStatic: false
   }
 });
 
-// Agregar al motor
+// Add to the engine
 gameEngine.addGameObject(ball);
 ```
 
-### Manejar input táctil
+### Handle touch input
 
 ```typescript
-// Detectar toques
+// Touch events
 gameEngine.onTouch('player-input', (touchEvent) => {
   if (touchEvent.type === 'start') {
-    console.log('Touch iniciado en:', touchEvent.position);
+    console.log('Touch started at:', touchEvent.position);
   }
 });
 
-// Detectar gestos
+// Gestures
 gameEngine.onGesture('player-gestures', (gesture) => {
   switch (gesture.type) {
     case 'tap':
-      console.log('Tap en:', gesture.position);
+      console.log('Tap at:', gesture.position);
       break;
     case 'swipe':
-      console.log('Swipe dirección:', gesture.direction);
+      console.log('Swipe direction:', gesture.direction);
       break;
   }
 });
 ```
 
-### Ciclo de actualización
+### Update loop
 
 ```typescript
 gameEngine.onUpdate((deltaTime) => {
-  // Lógica del juego cada frame
+  // Game logic per frame
   const ball = gameEngine.getGameObject('ball');
   if (ball) {
-    // Aplicar fuerzas, verificar condiciones, etc.
+    // Apply forces, check conditions, etc.
   }
 });
 
 gameEngine.onRender((interpolation) => {
-  // Renderizado (usar con tu sistema de renderizado preferido)
+  // Rendering (hook into your renderer of choice)
 });
 ```
 
-## 🎯 Ejemplos Avanzados
+## 🎯 Advanced Examples
 
-### Juego de Pong Simple
+### Simple Pong
 
 ```typescript
 import { GameEngine, GameObject, Vector2D } from 'expo-game-support';
@@ -175,7 +176,7 @@ class PongGame {
     this.gameEngine = new GameEngine({
       width: 400,
       height: 600,
-      gravity: new Vector2D(0, 0), // Sin gravedad para Pong
+      gravity: new Vector2D(0, 0), // No gravity for Pong
       gameLoop: {
         targetFPS: 60,
         maxDeltaTime: 0.016,
@@ -220,21 +221,21 @@ class PongGame {
     this.gameEngine.addGameObject(this.ball);
     this.gameEngine.addGameObject(this.paddle);
 
-    // Manejar input para mover paddle
+    // Handle input to move the paddle
     this.gameEngine.onTouch('paddle-control', (touch) => {
       if (touch.type === 'move') {
         this.paddle.position.x = touch.position.x;
       }
     });
 
-    // Lógica del juego
+    // Game logic
     this.gameEngine.onUpdate((deltaTime) => {
       this.updateGame(deltaTime);
     });
   }
 
   private updateGame(deltaTime: number) {
-    // Rebotar en paredes
+    // Wall bounces
     if (this.ball.position.x <= 10 || this.ball.position.x >= 390) {
       this.ball.physics!.velocity.x *= -1;
     }
@@ -242,7 +243,7 @@ class PongGame {
       this.ball.physics!.velocity.y *= -1;
     }
 
-    // Reiniciar si la pelota sale por abajo
+    // Reset if the ball leaves screen bottom
     if (this.ball.position.y > 610) {
       this.resetBall();
     }
@@ -260,7 +261,7 @@ class PongGame {
 }
 ```
 
-### Sistema de Partículas
+### Particle System
 
 ```typescript
 class ParticleSystem {
@@ -296,7 +297,7 @@ class ParticleSystem {
       this.particles.push(particle);
       this.gameEngine.addGameObject(particle);
 
-      // Destruir partícula después de 3 segundos
+      // Destroy particle after 3 seconds
       setTimeout(() => {
         particle.destroy();
         this.particles = this.particles.filter(p => p !== particle);
@@ -315,24 +316,26 @@ class ParticleSystem {
 new GameEngine(config: GameEngineConfig)
 ```
 
-#### Métodos principales
-- `initialize()`: Inicializa el motor
-- `start()`: Inicia el juego
-- `pause()`: Pausa el juego
-- `resume()`: Reanuda el juego
-- `stop()`: Detiene el juego
+#### Main methods
+- `initialize()`: Initialize engine
+- `start()`: Start game
+- `pause()`: Pause game
+- `resume()`: Resume game
+- `stop()`: Stop game
 
-#### Gestión de objetos
-- `addGameObject(gameObject: GameObject)`: Añade objeto al juego
-- `removeGameObject(id: string)`: Remueve objeto del juego
-- `getGameObject(id: string)`: Obtiene objeto por ID
-- `getAllGameObjects()`: Obtiene todos los objetos
+#### Object management
+- `addGameObject(gameObject: GameObject)`: Add an object
+- `removeGameObject(id: string)`: Remove an object
+- `getGameObject(id: string)`: Get by ID
+- `getAllGameObjects()`: Get all objects
 
 #### Callbacks
-- `onUpdate(callback: (deltaTime: number) => void)`: Callback de actualización
-- `onRender(callback: (interpolation: number) => void)`: Callback de renderizado
-- `onTouch(id: string, callback: (event: TouchEvent) => void)`: Callback de touch
-- `onGesture(id: string, callback: (gesture: GestureEvent) => void)`: Callback de gestos
+- `onUpdate(callback: (deltaTime: number) => void)`: Update callback
+- `onRender(callback: (interpolation: number) => void)`: Render callback
+- `onTouch(id: string, callback: (event: TouchEvent) => void)`: Touch callback
+- `onGesture(id: string, callback: (gesture: GestureEvent) => void)`: Gesture callback
+- `onCollisionStart(cb)`, `onCollisionEnd(cb)`: Physics collision events
+- `onTriggerEnter(cb)`, `onTriggerExit(cb)`: Trigger events
 
 ### GameObject
 
@@ -341,19 +344,19 @@ new GameEngine(config: GameEngineConfig)
 new GameObject(config: GameObjectConfig)
 ```
 
-#### Propiedades
-- `id: string`: Identificador único
-- `position: Vector2D`: Posición en el mundo
-- `size: Vector2D`: Tamaño del objeto
-- `rotation: number`: Rotación en radianes
-- `physics?: PhysicsBody`: Cuerpo físico (opcional)
+#### Properties
+- `id: string`: Unique identifier
+- `position: Vector2D`: World position
+- `size: Vector2D`: Object size
+- `rotation: number`: Radians
+- `physics?: PhysicsBody`: Optional rigid body
 
-#### Métodos
-- `update(deltaTime: number)`: Actualiza el objeto
-- `applyForce(force: Vector2D)`: Aplica fuerza
-- `applyImpulse(impulse: Vector2D)`: Aplica impulso
-- `containsPoint(point: Vector2D)`: Verifica si contiene un punto
-- `destroy()`: Destruye el objeto
+#### Methods
+- `update(deltaTime: number)`: Per-frame update
+- `applyForce(force: Vector2D)`: Apply force
+- `applyImpulse(impulse: Vector2D)`: Apply impulse
+- `containsPoint(point: Vector2D)`: Point test
+- `destroy()`: Destroy object
 
 ### Vector2D
 
@@ -362,54 +365,58 @@ new GameObject(config: GameObjectConfig)
 new Vector2D(x: number = 0, y: number = 0)
 ```
 
-#### Operaciones
-- `add(vector: Vector2D)`: Suma vectores
-- `subtract(vector: Vector2D)`: Resta vectores
-- `multiply(scalar: number)`: Multiplica por escalar
-- `divide(scalar: number)`: Divide por escalar
-- `magnitude()`: Magnitud del vector
-- `normalize()`: Normaliza el vector
-- `dot(vector: Vector2D)`: Producto punto
-- `distance(vector: Vector2D)`: Distancia entre vectores
+#### Operations
+- `add(vector: Vector2D)`
+- `subtract(vector: Vector2D)`
+- `multiply(scalar: number)`
+- `divide(scalar: number)`
+- `magnitude()`
+- `normalize()`
+- `dot(vector: Vector2D)`
+- `distance(vector: Vector2D)`
 
-## 🔧 Configuración Avanzada
+## 🔧 Advanced Configuration
 
-### Optimización de Rendimiento
+### Performance optimization
 
 ```typescript
-// Configurar para mejor rendimiento
+// Configure for performance
 const gameEngine = new GameEngine({
   width: 400,
   height: 600,
   gravity: new Vector2D(0, 981),
   gameLoop: {
-    targetFPS: 30, // Reducir FPS en dispositivos lentos
-    maxDeltaTime: 0.033, // Limitar saltos de tiempo
-    enableFixedTimeStep: false // Usar paso variable para mejor rendimiento
+    targetFPS: 30, // Reduce FPS on slower devices
+    maxDeltaTime: 0.033, // Limit time jumps
+    enableFixedTimeStep: false // Variable timestep for performance
   }
 });
 
-// Configurar input táctil
+// Touch input config
 gameEngine.touchInputManager.updateConfig({
-  deadZone: 10, // Zona muerta más grande
-  maxTouchPoints: 2, // Limitar puntos de toque
-  touchSensitivity: 0.8 // Reducir sensibilidad
+  deadZone: 10, // Larger dead zone
+  maxTouchPoints: 2, // Limit touch points
+  touchSensitivity: 0.8 // Lower sensitivity
 });
 ```
 
-## 🤝 Contribuir
+## 🤝 Contributing
 
-1. Fork el repositorio
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📄 Licencia
+## 📄 License
 
-MIT License - ver el archivo [LICENSE](LICENSE) para más detalles.
+MIT License - see [LICENSE](LICENSE) for details.
 
-## 🙏 Agradecimientos
+## 🙏 Acknowledgements
 
-- Inspirado en motores de juego como Phaser y Matter.js
-- Optimizado específicamente para el ecosistema Expo/React Native
+- Inspired by engines like Phaser and Matter.js
+- Tuned specifically for the Expo/React Native ecosystem
+
+---
+
+Note: To minimize tunneling and improve stability, we recommend a fixed time step (`enableFixedTimeStep: true`) with `targetFPS` 60 for physics-heavy scenes. Collision and trigger events are available via `GameEngine.onCollisionStart/End` and `onTriggerEnter/Exit`.

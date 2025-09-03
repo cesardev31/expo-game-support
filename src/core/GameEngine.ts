@@ -211,6 +211,28 @@ export class GameEngine {
     return this.physicsEngine.getGravity();
   }
 
+  // Physics event wrappers
+  onCollisionStart(callback: (collision: import("../types").CollisionEvent) => void): () => void {
+    // Forward to PhysicsEngine event system
+    // @ts-ignore - method defined in PhysicsEngine implementation
+    return this.physicsEngine.on("collision-start", callback);
+  }
+
+  onCollisionEnd(callback: (collision: import("../types").CollisionEvent) => void): () => void {
+    // @ts-ignore
+    return this.physicsEngine.on("collision-end", callback);
+  }
+
+  onTriggerEnter(callback: (collision: import("../types").CollisionEvent) => void): () => void {
+    // @ts-ignore
+    return this.physicsEngine.on("trigger-enter", callback);
+  }
+
+  onTriggerExit(callback: (collision: import("../types").CollisionEvent) => void): () => void {
+    // @ts-ignore
+    return this.physicsEngine.on("trigger-exit", callback);
+  }
+
   // Utilidades
   getObjectsInArea(center: Vector2D, radius: number): GameObject[] {
     const objectsInArea: GameObject[] = [];

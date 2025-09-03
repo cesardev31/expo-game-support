@@ -1,7 +1,7 @@
 {
   "name": "expo-game-support",
-  "version": "0.0.12",
-  "description": "Librería de soporte para desarrollo de juegos en Expo con físicas, gestión de ciclos de juego y optimización de inputs táctiles",
+  "version": "0.0.16",
+  "description": "Game support library for Expo/React Native with physics, robust game loop, and optimized touch input.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -22,6 +22,14 @@
   ],
   "author": "Cesar Andres Pereira Bernal",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cesardev31/expo-game-support.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cesardev31/expo-game-support/issues"
+  },
+  "homepage": "https://github.com/cesardev31/expo-game-support#readme",
   "peerDependencies": {
     "expo": ">=53.0.0",
     "react": ">=19.0.0",

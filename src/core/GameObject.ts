@@ -24,6 +24,22 @@ export class GameObject {
         ...config.physics,
         force: new Vector2D(0, 0),
         angularVelocity: 0,
+        angularAcceleration:
+          typeof config.physics.angularAcceleration === 'number'
+            ? config.physics.angularAcceleration
+            : 0,
+        linearDamping:
+          typeof config.physics.linearDamping === 'number'
+            ? config.physics.linearDamping
+            : 0,
+        angularDamping:
+          typeof config.physics.angularDamping === 'number'
+            ? config.physics.angularDamping
+            : 0,
+        affectedByGravity:
+          typeof config.physics.affectedByGravity === 'boolean'
+            ? config.physics.affectedByGravity
+            : true,
       };
     }
   }
