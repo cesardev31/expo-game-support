@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.17] - 2025-09-04
+
+### Added
+- Export `SpriteAnimator`, rendering types (`IRenderer`, `TextureInfo`, `DrawOptions`, `Rect as RenderRect`) and `GLRenderer` from `src/index.ts`.
+- README section for rendering with `GLRenderer` (Expo GL), including `GLView` setup and `gl.endFrameEXP()` usage.
+- Exports overview and platform notes (web-only texture upload helper, native texture upload guidance).
+- Expanded installation instructions to include `expo-asset`, `expo-av`, and `expo-gl`.
+- CONTRIBUTING guide translated and expanded to English with setup, scripts, coding standards, testing, PR process, and releases.
+
+### Changed
+- Consistent import quotes in `src/index.ts`.
+- Documentation updates across README for features and types.
+
+### Fixed
+- Removed unused `@ts-expect-error` directive in `src/render/TextureHelpers.ts` to eliminate TypeScript warning.
+
 ## [0.0.1] - 2024-01-01
 
 ### Added

@@ -9,6 +9,8 @@ A complete game-development library for Expo/React Native that adds advanced phy
 - **Advanced Touch Input**: Optimized gestures (tap, swipe, long press, double tap)
 - **Collision Detection**: AABB and circle with basic resolution
 - **Collision Events**: Collision start/end and trigger enter/exit callbacks
+- **Rendering (optional)**: WebGL renderer via Expo GL (`GLRenderer`) and typed render interfaces (`IRenderer`, `TextureInfo`, `DrawOptions`)
+- **Assets & Audio**: `AssetManager` for images/spritesheets/textures and audio (via `expo-asset`/`expo-av`); `SpriteAnimator` for sprite animations
 - **2D Math**: Comprehensive vector operations
 - **TypeScript**: Fully typed for an improved DX
 
@@ -20,7 +22,9 @@ npm install expo-game-support
 
 ### Required peer dependencies:
 ```bash
-npm install expo react react-native react-native-gesture-handler react-native-reanimated
+npm install expo react react-native \
+  expo-asset expo-av expo-gl \
+  react-native-gesture-handler react-native-reanimated
 ```
 
 ## 🎮 Basic Usage
@@ -159,6 +163,78 @@ gameEngine.onRender((interpolation) => {
   // Rendering (hook into your renderer of choice)
 });
 ```
+
+## 🖼️ Rendering with GLRenderer (Expo GL)
+
+This library ships an optional WebGL renderer built on top of `expo-gl`. You can use the typed interfaces exported from `render/IRenderer` and the concrete `GLRenderer`:
+
+```ts
+import { GameEngine } from 'expo-game-support';
+import { GLView } from 'expo-gl';
+import { GLRenderer } from 'expo-game-support';
+
+export default function GameWithGL() {
+  return (
+    <GLView
+      style={{ flex: 1 }}
+      onContextCreate={(gl) => {
+        const renderer = new GLRenderer(gl);
+
+        const engine = new GameEngine({
+          width: gl.drawingBufferWidth,
+          height: gl.drawingBufferHeight,
+          gameLoop: { targetFPS: 60, maxDeltaTime: 0.033, enableFixedTimeStep: true },
+        });
+
+        // Hook engine render to the renderer
+        engine.onRender(() => {
+          renderer.beginFrame();
+          // renderer.drawRect({...}) or draw your textures/sprites here
+          renderer.endFrame();
+          gl.endFrameEXP?.();
+        });
+
+        engine.initialize();
+        engine.start();
+      }}
+    />
+  );
+}
+```
+
+Types you can import:
+
+```ts
+import type { IRenderer, TextureInfo, DrawOptions, Rect as RenderRect } from 'expo-game-support';
+```
+
+## 📤 Exports Overview
+
+From `expo-game-support` root entry:
+
+- Core: `GameEngine`, `GameLoop`, `GameObject`
+- Physics: `PhysicsEngine`, `CollisionDetector`
+- Input: `TouchInputManager` (web), `TouchInputManagerRN` (React Native)
+- Utils: `BoundaryChecker`, `ObjectCleaner`, `ScoreZone`, `ScoreManager`, `ObjectSpawner`
+- Assets: `AssetManager`, `SpriteAnimator`
+- Rendering (optional): `GLRenderer` and render types `IRenderer`, `TextureInfo`, `DrawOptions`, `Rect as RenderRect`
+- Types: `GameEngineConfig`, `GameObjectConfig`, `PhysicsBody`, `GameTouchEvent`, `GameLoopConfig`, `CollisionEvent`, and assets types like `AssetManifest`, `AssetId`, `ImageAsset`, `TextureAsset`, `SoundAsset`, `LoadedTexture`, `LoadedSpriteSheet`, `SoundHandle`
+
+Check `src/index.ts` for the authoritative export list.
+
+## 🧭 Platform Notes
+
+- Web-only helpers:
+  - `uploadTextureFromImage(image: HTMLImageElement | ImageBitmap)` is intended for web contexts using DOM-compatible image sources.
+  - On iOS/Android, you must decode the asset to raw RGBA pixels before calling `gl.texImage2D` (see `uploadTextureFromAssetNative` placeholder). Consider integrating native-assisted decoding or use Expo utilities to obtain a pixel buffer.
+
+- React Native setup:
+  - Ensure you have `react-native-gesture-handler` and `react-native-reanimated` properly configured per their docs.
+  - For `expo-gl`, use `GLView` and call `gl.endFrameEXP()` after each frame.
+  - Prefer platform-specific files when needed (e.g. `*.web.ts` vs `*.native.ts`) to separate implementations.
+
+- Tree-shaking:
+  - The API is designed to be modular. Import only what you use to keep bundle sizes small.
 
 ## 🎯 Advanced Examples
 

@@ -5,6 +5,8 @@ import { TouchInputManagerRN } from "../input/TouchInputManagerRN";
 import { GameObject } from "./GameObject";
 import { Vector2D } from "../math/Vector2D";
 import { GameEngineConfig, CollisionEvent } from "../types";
+import { AssetManager } from "../assets/AssetManager";
+import type { AssetManifest } from "../types/assets";
 
 // Motor principal del juego que coordina todos los sistemas
 export class GameEngine {
@@ -14,6 +16,7 @@ export class GameEngine {
   private gameObjects: Map<string, GameObject> = new Map();
   private config: GameEngineConfig;
   private isInitialized: boolean = false;
+  public readonly assets: AssetManager;
 
   // Callbacks del usuario
   private updateCallback: (deltaTime: number) => void = () => {};
@@ -26,6 +29,7 @@ export class GameEngine {
     this.gameLoop = new GameLoop(config.gameLoop);
     this.physicsEngine = new PhysicsEngine(config.gravity);
     this.touchInputManager = this.createTouchInputManager();
+    this.assets = new AssetManager();
 
     this.setupGameLoop();
   }
@@ -211,6 +215,11 @@ export class GameEngine {
     return this.physicsEngine.getGravity();
   }
 
+  // Assets API
+  async loadAssets(manifest: AssetManifest): Promise<void> {
+    await this.assets.preload(manifest);
+  }
+
   // Physics event wrappers
   onCollisionStart(callback: (collision: import("../types").CollisionEvent) => void): () => void {
     // Forward to PhysicsEngine event system
@@ -274,6 +283,8 @@ export class GameEngine {
     this.gameObjects.clear();
     this.physicsEngine.clear();
     this.touchInputManager.destroy();
+    // Unload assets
+    this.assets.unloadAll().catch(() => {});
   }
 
   // Métodos para React Native - conectar eventos táctiles manualmente

@@ -18,9 +18,9 @@ export class TouchInputManager {
     longPressTimeout: 800 // ms para detectar long press
   };
 
-  // Timers para gestos
-  private tapTimer: number | null = null;
-  private longPressTimer: number | null = null;
+  // Timers para gestos (compatible con DOM y Node typings)
+  private tapTimer: ReturnType<typeof setTimeout> | null = null;
+  private longPressTimer: ReturnType<typeof setTimeout> | null = null;
   private lastTapTime: number = 0;
   private lastTapPosition: Vector2D | null = null;
 

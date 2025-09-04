@@ -1,5 +1,5 @@
 // Tipos y interfaces principales de la librería
-import { Vector2D } from '../math/Vector2D';
+import { Vector2D } from "../math/Vector2D";
 
 export { Vector2D };
 
@@ -18,7 +18,6 @@ export interface PhysicsBodyConfig {
   friction: number;
   restitution: number;
   isStatic: boolean;
-  // Optional extended config fields accepted at construction time
   linearDamping?: number;
   angularDamping?: number;
   affectedByGravity?: boolean;
@@ -90,7 +89,7 @@ export interface RigidBody {
 // Restricciones/joints mínimas
 export interface Joint {
   id: string;
-  type: 'distance' | 'revolute' | 'weld';
+  type: "distance" | "revolute" | "weld";
   objectA: string;
   objectB: string;
   enabled: boolean;
@@ -111,7 +110,7 @@ export interface Joint {
 }
 
 export interface Constraint {
-  type: 'position' | 'velocity' | 'angle';
+  type: "position" | "velocity" | "angle";
   enabled: boolean;
   // Datos específicos según tipo
   [key: string]: any;
@@ -121,7 +120,7 @@ export interface GameTouchEvent {
   id: number;
   position: Vector2D;
   timestamp: number;
-  type: 'start' | 'move' | 'end' | 'cancel';
+  type: "start" | "move" | "end" | "cancel";
   pressure?: number;
 }
 

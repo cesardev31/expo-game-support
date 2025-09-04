@@ -1,6 +1,6 @@
 {
   "name": "expo-game-support",
-  "version": "0.0.16",
+  "version": "0.0.18",
   "description": "Game support library for Expo/React Native with physics, robust game loop, and optimized touch input.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -33,7 +33,9 @@
   "peerDependencies": {
     "expo": ">=53.0.0",
     "react": ">=19.0.0",
-    "react-native": ">=0.72.0"
+    "react-native": ">=0.72.0",
+    "expo-asset": ">=11.0.0",
+    "expo-av": ">=14.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.0.0",
@@ -49,6 +51,7 @@
   },
   "dependencies": {
     "react-native-gesture-handler": "^2.12.0",
-    "react-native-reanimated": "^3.5.0"
+    "react-native-reanimated": "^3.5.0",
+    "expo-gl": "^13.0.0"
   }
 }

@@ -1,222 +1,317 @@
 # Contributing to Expo Game Support
 
-¡Gracias por tu interés en contribuir a expo-game-support! Este documento te guiará a través del proceso de contribución.
+Thanks for your interest in contributing to `expo-game-support`! This guide walks you through setting up your environment, coding standards, testing, and our PR process.
 
-## 🚀 Cómo Empezar
+## 🚀 Getting Started
 
-### Prerrequisitos
-- Node.js 16 o superior
-- npm o yarn
+### Prerequisites
+
+- Node.js 18+ (LTS recommended)
+- npm (or yarn, pnpm)
 - Git
+- Expo CLI (for running the example app):
+  ```bash
+  npm i -g expo-cli
+  ```
 
-### Configuración del Entorno de Desarrollo
+### Development Setup
 
-1. Fork el repositorio
-2. Clona tu fork:
+1. Fork the repository, then clone your fork:
+
 ```bash
-git clone https://github.com/tu-usuario/expo-game-support.git
+git clone https://github.com/cesardev31/expo-game-support.git
 cd expo-game-support
 ```
 
-3. Instala las dependencias:
+2. Install dependencies (root contains the library; `game-test/` is an example app):
+
 ```bash
 npm install
 ```
 
-4. Ejecuta los tests para asegurar que todo funciona:
-```bash
-npm test
-```
+3. Build the library in watch mode while developing:
 
-5. Inicia el modo de desarrollo:
 ```bash
 npm run dev
 ```
 
-## 📝 Proceso de Contribución
+4. Run the example app (optional) to test changes in a real Expo project:
 
-### 1. Reportar Bugs
-- Usa el template de issue para bugs
-- Incluye pasos para reproducir el problema
-- Proporciona información del entorno (OS, versión de Node, etc.)
-- Incluye código de ejemplo si es posible
-
-### 2. Solicitar Features
-- Usa el template de issue para features
-- Explica el caso de uso y el beneficio
-- Proporciona ejemplos de la API propuesta
-
-### 3. Pull Requests
-
-#### Antes de Enviar
-- Asegúrate de que los tests pasen: `npm test`
-- Ejecuta el linter: `npm run lint`
-- Compila el proyecto: `npm run build`
-- Actualiza la documentación si es necesario
-
-#### Convenciones de Commit
-Usamos [Conventional Commits](https://www.conventionalcommits.org/):
-
-```
-feat: agregar detección de colisión circular
-fix: corregir memory leak en TouchInputManager
-docs: actualizar README con nuevos ejemplos
-test: agregar tests para PhysicsEngine
-refactor: optimizar algoritmo de colisión
+```bash
+cd game-test
+npm install
+npx expo start
 ```
 
-#### Estructura del PR
-- Título descriptivo
-- Descripción clara de los cambios
-- Referencias a issues relacionados
-- Screenshots/GIFs si aplica
+## 📜 Scripts
 
-## 🏗️ Arquitectura del Proyecto
+- `npm run build` — compile TypeScript to `dist/`
+- `npm run dev` — watch build for local development
+- `npm run lint` — run ESLint over `src/**/*.ts(x)`
+- `npm run test` — run unit tests (Jest)
+
+## 🧭 Coding Standards
+
+- TypeScript strict mode is enabled; keep types accurate and avoid `any`.
+- Follow the existing folder structure and platform file conventions (`*.web.ts` / `*.native.ts` when needed).
+- Keep public APIs typed and re-exported from `src/index.ts`.
+- Document platform-specific behavior (e.g., web-only helpers) with clear comments.
+
+### Linting & Formatting
+
+- Run `npm run lint` and fix reported issues before submitting a PR.
+- Keep imports ordered and avoid unused symbols.
+
+### Testing
+
+- Add or update tests when changing behavior or fixing bugs.
+- Prefer unit tests close to the impacted modules; use Jest.
+
+## 🔀 Branching & Pull Requests
+
+1. Create a feature branch from `main`:
+
+```bash
+git checkout -b feat/my-feature
+```
+
+2. Make focused commits with clear messages:
+
+```
+feat(renderer): add GLRenderer begin/end frame helpers
+fix(touch): handle multi-touch end event ordering
+docs(readme): document exports and platform notes
+```
+
+3. Push your branch and open a Pull Request:
+
+```bash
+git push origin feat/my-feature
+```
+
+4. PR checklist:
+
+- [ ] CI is green (build, lint, tests)
+- [ ] README/docs updated if public API changes
+- [ ] Changelog entry added (see below)
+
+## 🧾 Changelog & Versioning
+
+We follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) and semantic versioning.
+
+- Add a new entry under `## [Unreleased]` or the next version in `CHANGELOG.md` with sections: `Added`, `Changed`, `Fixed`, `Removed`, `Breaking`.
+- Maintainers will bump the version and publish as needed.
+
+## 🛠️ Release (Maintainers)
+
+1. Ensure `npm run build` is clean and `dist/` is up to date.
+2. Update `CHANGELOG.md` and `package.json` version.
+3. `npm publish` from the `expo-game-support/` directory.
+
+## 🤝 Code of Conduct
+
+Please be respectful and collaborative. We are committed to providing a friendly, safe, and welcoming environment for all. Report unacceptable behavior via GitHub issues.
+
+## 📝 Contribution Process
+
+### 1) Reporting Bugs
+
+- Use the bug report issue template.
+- Include clear reproduction steps.
+- Provide environment details (OS, Node, Expo/RN versions).
+- Add a minimal code sample if possible.
+
+### 2) Requesting Features
+
+- Use the feature request issue template.
+- Explain the use case and benefits.
+- Propose API examples when relevant.
+
+### 3) Pull Requests
+
+#### Before Submitting
+
+- Ensure tests pass: `npm test`
+- Lint passes: `npm run lint`
+- Build succeeds: `npm run build`
+- Update documentation where applicable
+
+#### Commit Conventions
+
+We recommend [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat: add circular collision detection
+fix: resolve memory leak in TouchInputManager
+docs: update README with rendering examples
+test: add unit tests for PhysicsEngine
+refactor: optimize collision algorithm
+```
+
+#### PR Structure
+
+- Descriptive title
+- Clear description of changes
+- References to related issues
+- Screenshots/GIFs when applicable
+
+## 📐 Project Architecture
 
 ```
 src/
-├── core/           # Componentes principales
+├── core/           # Core components
 │   ├── GameEngine.ts
 │   ├── GameLoop.ts
 │   └── GameObject.ts
-├── physics/        # Sistema de físicas
+├── physics/        # Physics system
 │   ├── PhysicsEngine.ts
 │   └── CollisionDetector.ts
-├── input/          # Gestión de input
-│   └── TouchInputManager.ts
-├── math/           # Utilidades matemáticas
+├── input/          # Input handling
+│   ├── TouchInputManager.ts
+│   └── TouchInputManagerRN.ts
+├── render/         # Optional rendering layer
+│   ├── GLRenderer.ts
+│   ├── IRenderer.ts
+│   └── TextureHelpers.ts
+├── assets/         # Asset management
+│   ├── AssetManager.ts
+│   └── SpriteAnimator.ts
+├── math/           # Math utilities
 │   └── Vector2D.ts
-├── types/          # Definiciones de tipos
-│   └── index.ts
-└── index.ts        # Punto de entrada
+├── types/          # Type definitions
+│   ├── index.ts
+│   └── assets.ts
+└── index.ts        # Entry point (exports)
 ```
 
 ## 🧪 Testing
 
-### Ejecutar Tests
+### Running Tests
+
 ```bash
-npm test                 # Todos los tests
-npm test -- --watch     # Modo watch
-npm test -- --coverage  # Con coverage
+npm test                 # All tests
+npm test -- --watch      # Watch mode
+npm test -- --coverage   # Coverage
 ```
 
-### Escribir Tests
-- Usa Jest para unit tests
-- Coloca tests en `src/__tests__/`
-- Nombra archivos como `*.test.ts`
-- Mantén coverage > 80%
+### Writing Tests
 
-### Ejemplo de Test
+- Use Jest for unit tests.
+- Place tests under `src/__tests__/`.
+- Name files `*.test.ts` or `*.test.tsx`.
+- Aim for meaningful coverage and test behavior, not implementation.
+
+### Example Test
+
 ```typescript
-import { Vector2D } from '../math/Vector2D';
+import { Vector2D } from "../math/Vector2D";
 
-describe('Vector2D', () => {
-  it('should add vectors correctly', () => {
+describe("Vector2D", () => {
+  it("adds vectors correctly", () => {
     const v1 = new Vector2D(1, 2);
     const v2 = new Vector2D(3, 4);
     const result = v1.add(v2);
-    
+
     expect(result.x).toBe(4);
     expect(result.y).toBe(6);
   });
 });
 ```
 
-## 📚 Documentación
+## 📚 Documentation
 
-### Actualizar Documentación
-- README.md para cambios en la API
-- Comentarios JSDoc en el código
-- Ejemplos en `/examples`
-- CHANGELOG.md para releases
+### Update Docs
 
-### Estilo de Documentación
+- Update `README.md` when public APIs change.
+- Add JSDoc comments to public types and methods.
+- Keep `CHANGELOG.md` updated for releases.
+- Add or update examples under `/examples/`.
+
+### JSDoc Style
+
 ```typescript
 /**
- * Aplica una fuerza al objeto del juego
- * @param force - Vector de fuerza a aplicar
+ * Apply a force to the game object.
+ * @param force - Force vector to apply
  * @example
- * ```typescript
  * gameObject.applyForce(new Vector2D(100, 0));
- * ```
  */
 applyForce(force: Vector2D): void {
-  // implementación
+  // implementation
 }
 ```
 
-## 🎨 Estilo de Código
+## 🎨 Code Style
 
 ### TypeScript
-- Usa tipos estrictos
-- Evita `any`
-- Documenta interfaces públicas
-- Usa nombres descriptivos
 
-### Formateo
-- 2 espacios para indentación
-- Punto y coma obligatorio
-- Comillas simples para strings
-- Trailing commas en objetos/arrays
+- Use strict typing and avoid `any`.
+- Document public interfaces and classes.
+- Prefer descriptive names.
+
+### Formatting
+
+- 2 spaces indentation
+- Semicolons required
+- Consistent quotes
+- Trailing commas where appropriate
 
 ### ESLint
+
 ```bash
-npm run lint        # Verificar
-npm run lint:fix    # Corregir automáticamente
+npm run lint        # Check
+npm run lint:fix    # Auto-fix
 ```
 
 ## 🚀 Performance
 
-### Consideraciones
-- Evita allocaciones innecesarias en el game loop
-- Usa object pooling para objetos frecuentes
-- Optimiza algoritmos de colisión
-- Minimiza garbage collection
+### Considerations
+
+- Avoid unnecessary allocations in the game loop.
+- Use object pooling for frequently created objects.
+- Optimize collision algorithms.
+- Minimize garbage collection pressure.
 
 ### Profiling
+
 ```typescript
-// Usar console.time para medir performance
-console.time('collision-detection');
-// código a medir
-console.timeEnd('collision-detection');
+console.time("collision-detection");
+// code to measure
+console.timeEnd("collision-detection");
 ```
 
-## 📋 Checklist para PRs
+## ✅ PR Checklist
 
-- [ ] Tests pasan
-- [ ] Linter pasa
-- [ ] Documentación actualizada
-- [ ] Changelog actualizado (si aplica)
-- [ ] Performance considerada
-- [ ] Backward compatibility mantenida
-- [ ] Ejemplos actualizados (si aplica)
+- [ ] Tests pass
+- [ ] Lint passes
+- [ ] Docs updated (if applicable)
+- [ ] Changelog updated (if applicable)
+- [ ] Performance considerations reviewed
+- [ ] Backward compatibility maintained
+- [ ] Examples updated (if applicable)
 
-## 🤝 Código de Conducta
+## ❓ Need Help?
 
-- Sé respetuoso y constructivo
-- Ayuda a otros contribuidores
-- Reporta comportamiento inapropiado
-- Mantén discusiones técnicas enfocadas
-
-## ❓ ¿Necesitas Ayuda?
-
-- Abre un issue con la etiqueta "question"
-- Revisa issues existentes
-- Consulta la documentación
-- Contacta a los maintainers
+- Open an issue labeled "question"
+- Search existing issues
+- Check the documentation
+- Contact maintainers via issues
 
 ## 🏷️ Releases
 
-### Versionado
-Seguimos [Semantic Versioning](https://semver.org/):
-- MAJOR: cambios incompatibles
-- MINOR: nuevas funcionalidades compatibles
-- PATCH: bug fixes compatibles
+### Versioning
 
-### Proceso de Release
-1. Actualizar CHANGELOG.md
-2. Bump version en package.json
-3. Crear tag de git
-4. Publicar a npm
+We follow [Semantic Versioning](https://semver.org/):
 
-¡Gracias por contribuir a expo-game-support! 🎮
+- MAJOR: incompatible API changes
+- MINOR: backwards-compatible features
+- PATCH: backwards-compatible bug fixes
+
+### Release Process
+
+1. Update `CHANGELOG.md`
+2. Bump version in `package.json`
+3. Create a git tag
+4. Publish to npm
+
+Thank you for contributing to expo-game-support! 🎮
